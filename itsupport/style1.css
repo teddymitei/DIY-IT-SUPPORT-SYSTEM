@@ -1,0 +1,77 @@
+body {
+    background-image: url(voyager.webp);
+    font-family:"Roboto", sans-serif;
+  }
+  .card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1.25rem;
+    max-width: 800px;
+    background: skyblue;
+   
+}
+.card{
+    max-width: 800px;
+}
+  .signup-box {
+    width: 260px;
+    height: 520px;
+    margin: auto;
+    background-color:skyblue;
+    border-radius: 3px;
+  }
+  
+  .login-box {
+    width: 260px;
+    height: 280px;
+    margin: auto;
+    border-radius: 3px;
+    background-color:skyblue;
+  }
+  
+  h1 {
+    text-align: center;
+    padding-top: 15px;
+  }
+  
+  h4 {
+    text-align: center;
+  }
+  
+  form {
+    width: 600px;
+    margin-left: 20px;
+  }
+  
+  form label {
+    display: flex;
+    margin-top: 20px;
+    font-size: 18px;
+  }
+  
+  form input {
+    width: 100%;
+    padding: 7px;
+    border: none;
+    border: 1px solid gray;
+    border-radius: 6px;
+    outline: none;
+  }
+  input[type="button"] {
+    width: 320px;
+    height: 35px;
+    margin-top: 20px;
+    border: none;
+    background-color: rgba(0, 0, 128, 0.699);
+    color:white;
+    font-size: 18px;
+  }
+  p {
+    text-align: center;
+    padding-top: 20px;
+    font-size: 15px;
+  }
+  
+  
+  
