@@ -1,0 +1,85 @@
+body {
+  background-image: url(Blue2.png);
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.card-body {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  min-height: 1px;
+  padding: 1.25rem;
+  max-width: 800px;
+  background: rgb(8, 170, 234);
+  margin: auto;
+  border-radius: 10px; /* Add border-radius for smooth corners */
+}
+
+.card {
+  max-width: fit-content;
+  margin: auto;
+  border-radius: 10px; /* Add border-radius for smooth corners */
+ 
+}
+
+.signup-box,
+.login-box {
+  width: 60%;
+  max-width: 260px;
+  margin: 20px auto;
+  border-radius: 10px; /* Add border-radius for smooth corners */
+  background-color: skyblue;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  padding-top: 15px;
+}
+
+h4 {
+  text-align: center;
+}
+
+form {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+
+form label {
+  display: flex;
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+form input {
+  width: 100%;
+  padding: 7px;
+  border: 1px solid gray;
+  border-radius: 6px;
+  outline: none;
+}
+
+input[type="button"] {
+  width: 100%;
+  height: 35px;
+  margin-top: 20px;
+  border: none;
+  background-color: rgba(0, 0, 128, 0.699);
+  color: white;
+  font-size: 18px;
+}
+
+p {
+  text-align: center;
+  padding-top: 20px;
+  font-size: 15px;
+}
+
+
