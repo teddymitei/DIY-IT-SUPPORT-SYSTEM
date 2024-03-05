@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Support Chatbot</title>
+    <style>
+        /* Your existing styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url(http://localhost/itsupport/static/photos/chatbot.png);
+        }
+
+        #chat-container {
+            width: 400px;
+            background-color: rgb(8, 170, 234);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px; /* Adjusted for space below navigation */
+        }
+
+        #chat-messages {
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .bot-message {
+            align-items: flex-start;
+        }
+
+        .user-message {
+            align-items: flex-end;
+        }
+
+        .message p {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 10px;
+            word-wrap: break-word;
+            margin: 5px 0;
+        }
+
+        .bot-message p {
+            background-color: #e1f5fe;
+            color: #000;
+        }
+
+        .user-message p {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        #user-input-form {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+
+        #user-input {
+            flex-grow: 1;
+            margin-right: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        #submit-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            clear:both;
+            padding: 3px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+
+        nav img {
+            width: 100px;
+            height: auto;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+
+        #logout-button {
+            background-color: #4a8db9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation bar -->
+    <nav>
+        <a href="http://localhost/itsupport/templates/landingpage.php#">
+        <img src="http://localhost/itsupport/static/photos/logo3.png" alt="Logo">
+        </a>
+        <!--a href="http://localhost/itsupport/templates/landingpage.php#">Home</a-->
+        <a id="logout-button" href="http://localhost/itsupport/templates/landingpage.php#">Logout</a>
+    </nav>
+
+    <div id="chat-container">
+        <div id="chat-messages">
+            <div class="message bot-message">
+                <p>Welcome to the IT Support Chatbot! What's your name?</p>
+            </div>
+        </div>
+        <form id="user-input-form" onsubmit="submitName(); return false;">
+            <input type="text" id="user-input" placeholder="Enter your input..." required>
+            <button id="submit-button" type="submit">Submit</button>
+        </form>
+    </div>
+      <script>
+var userName = "";
+var menuLevel = 0;
+
+function submitName() {
+    var input = document.getElementById('user-input').value;
+    if (userName === "") {
+        userName = input;
+        appendUserMessage(userName);
+        appendBotMessage([
+            "Nice to meet you, " + userName + "!<br>Follow the steps below to troubleshoot your problem<br>Instructions:<br>Type the letter corresponding to your choice and press Enter.<br>You can type 'return' anytime to go back to the main menu.<br>Type 'exit' to quit the chatbot.<br>Main Menu:<br>1. IT Support<br>2. About<br>3. Exit"
+        ]);
+    } else {
+        handleUserInput(input);
+    }
+    document.getElementById('user-input').value = '';
+}
+
+function showMainMenu() {
+    menuLevel = 0;
+    appendBotMessage([
+        "Instructions:<br>Type the letter corresponding to your choice and press Enter.<br>You can type 'return' anytime to go back to the main menu.<br>Type 'exit' to quit the chatbot.<br>Main Menu:<br>1. IT Support<br>2. About<br>3. Exit"
+    ]);
+}
+
+function handleUserInput(input) {
+    appendUserMessage(input);
+    if (menuLevel === 0) {
+        handleMainMenuInput(input);
+    } else if (menuLevel === 1) {
+        handleITSupportMenuInput(input);
+    } else if (menuLevel === 3) {
+        handleErrorInput(input);
+    }
+}
+
+function handleErrorInput(input) {
+    // Make an AJAX request to the server
+    fetch('/handle_error_code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',  // Set content type to JSON
+        },
+        body: JSON.stringify({ error_code: input }),  // Send error code as JSON
+    })
+    .then(response => response.json())  // Parse the response as JSON
+    .then(data => {
+        // Update the chat interface based on the server's response
+        appendBotMessage([data.response]);
+        menuLevel = data.menuLevel;  // Update menu level from the server
+    });
+}
+
+function handleMainMenuInput(input) {
+    // Make an AJAX request to the server
+    fetch('/handle_main_menu_input', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',  // Set content type to JSON
+        },
+        body: JSON.stringify({ user_input: input }),  // Send input as JSON
+    })
+    .then(response => response.json())  // Parse the response as JSON
+    .then(data => {
+        // Update the chat interface based on the server's response
+        appendBotMessage([data.response]);
+        menuLevel = data.menuLevel;  // Update menu level from the server
+    });
+}
+
+function handleITSupportMenuInput(input) {
+    // Make an AJAX request to the server
+    fetch('/handle_it_support_choice', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',  // Set content type to JSON
+        },
+        body: JSON.stringify({ choice: input }),  // Send choice as JSON
+    })
+    .then(response => response.json())  // Parse the response as JSON
+    .then(data => {
+        // Update the chat interface based on the server's response
+        appendBotMessage([data.response]);
+        menuLevel = data.menuLevel;  // Update menu level from the server
+    });
+}
+
+function appendBotMessage(messages) {
+    var chatMessages = document.getElementById('chat-messages');
+    var botMessage = document.createElement('div');
+    botMessage.classList.add('message', 'bot-message');
+    botMessage.innerHTML = '<p></p>';  // Create an empty paragraph
+    chatMessages.appendChild(botMessage);
+
+    // Disable user input while the bot is typing
+    document.getElementById('user-input').disabled = true;
+
+    // Type each message in sequence
+    var container = botMessage.querySelector('p');
+    typeMessage(messages, container, true);
+
+    // Scroll the chat window to the bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function appendUserMessage(message) {
+    var chatMessages = document.getElementById('chat-messages');
+    var userMessage = document.createElement('div');
+    userMessage.classList.add('message', 'user-message');
+    userMessage.innerHTML = '<p>' + message + '</p>';
+    chatMessages.appendChild(userMessage);
+
+    // Scroll the chat window to the bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function typeMessage(messages, container, enableUserInput) {
+    var lineIndex = 0;
+    var wordIndex = 0;
+
+    function typeLine() {
+        var line = messages[lineIndex].split(" ");
+        var i = 0;
+        return new Promise(resolve => {
+            var intervalId = setInterval(function () {
+                if (i < line[wordIndex].length) {
+                    // Check for <br> tag and create a line break
+                    if (line[wordIndex].substring(i, i+4) === "<br>") {
+                        container.innerHTML += '<br>';
+                        i += 4;
+                    } else {
+                        container.innerHTML += line[wordIndex].charAt(i);
+                        i++;
+                    }
+                } else {
+                    clearInterval(intervalId);
+                    wordIndex++;
+                    if (wordIndex < line.length) {
+                        container.innerHTML += ' ';
+                        typeLine();
+                    } else {
+                        resolve();
+                        lineIndex++;
+                        wordIndex = 0;
+
+                        // Move to the next line after a short delay
+                        setTimeout(function () {
+                            if (lineIndex < messages.length) {
+                                // Add a line break before the next line
+                                container.innerHTML += '<br>';
+                                typeLine();
+                            } else {
+                                if (enableUserInput) {
+                                    // Re-enable user input after the bot has finished typing
+                                    document.getElementById('user-input').disabled = false;
+                                    // Scroll the chat window to the bottom
+                                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                                }
+                            }
+                        }, 100);
+                    }
+                }
+            }, 50);  // Adjust the typing speed
+        });
+    }
+
+    return typeLine();
+    
+}
+
+
+   </script>
+</body>
+</html>
